@@ -311,13 +311,13 @@
 
   function renderEventoCard(e,hoje,amanha){
     const d=e.data?new Date(e.data):null;
-    const dia=d?d.getDate():'—';
-    const mes=d?d.toLocaleDateString('pt-BR',{month:'short'}).toUpperCase().replace('.',''):'';
+    const dia=d?d.getUTCDate():'—';
+    const mes=d?d.toLocaleDateString('pt-BR',{month:'short',timeZone:'UTC'}).toUpperCase().replace('.',''):'';
     const hora=d&&e.data.includes('T')?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
     const cor=catColor[e.categoria]||'#888';
     const pctCor=e.progresso===100?'#00E676':e.progresso>50?'#FFD600':'#FF5A00';
     let badge='';
-    if(d){const dd=new Date(d);dd.setHours(0,0,0,0);if(dd.getTime()===hoje.getTime())badge=`<span class="hoje-badge">HOJE</span>`;else if(dd.getTime()===amanha.getTime())badge=`<span class="amanha-badge">AMANHÃ</span>`;}
+    if(d){const dd=new Date(d);dd.setUTCHours(0,0,0,0);if(dd.getTime()===hoje.getTime())badge=`<span class="hoje-badge">HOJE</span>`;else if(dd.getTime()===amanha.getTime())badge=`<span class="amanha-badge">AMANHÃ</span>`;}
     return `<div class="evento-card" style="border-left:3px solid ${cor}">
       <div class="evento-top">
         <div style="flex:1;margin-right:8px">
