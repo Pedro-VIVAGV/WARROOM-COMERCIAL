@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       return {
         id: page.id,
         nome: props["Nome do Projeto"]?.title?.[0]?.plain_text || "(sem nome)",
-        data: props["Data Evento"]?.date?.start || null,
+        data: props["Data Evento"]?.date?.start?.split("T")[0] || null,
         categoria: props["Categoria"]?.select?.name || "",
         empresa: props["Empresa Execução"]?.select?.name || "",
         local: props["Localização"]?.rich_text?.[0]?.plain_text || "",
