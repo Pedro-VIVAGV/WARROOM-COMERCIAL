@@ -10,6 +10,7 @@
     --orange:#FF5A00; --bg:#0B0B0B; --surface:#141414; --surface2:#1C1C1C;
     --border:rgba(255,255,255,0.07); --text:#EFEFEF; --muted:#555;
     --green:#00E676; --red:#FF3D57; --yellow:#FFD600; --blue:#00B0FF;
+    --purple:#B388FF;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
@@ -21,7 +22,6 @@
       linear-gradient(90deg, rgba(255,90,0,0.02) 1px, transparent 1px);
     background-size:auto,48px 48px,48px 48px;
   }
-
   header {
     position:sticky; top:0; z-index:100;
     background:rgba(11,11,11,0.95); backdrop-filter:blur(16px);
@@ -38,14 +38,18 @@
   .btn-sync:hover { background:rgba(255,90,0,0.1); }
   .spinning { animation:spin .7s linear infinite; display:inline-block; }
   @keyframes spin { to { transform:rotate(360deg); } }
-
+  .tabs { display:flex; padding:0 24px; border-bottom:1px solid var(--border); position:relative; z-index:1; background:rgba(11,11,11,0.8); }
+  .tab { padding:14px 20px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; letter-spacing:.5px; }
+  .tab:hover { color:var(--text); }
+  .tab.active { color:var(--orange); border-bottom-color:var(--orange); }
+  .panel { display:none; }
+  .panel.active { display:block; }
   .kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; margin:24px 24px 0; background:var(--border); border-radius:14px; overflow:hidden; border:1px solid var(--border); position:relative; z-index:1; }
   .kpi { background:var(--surface); padding:20px 18px; }
   .kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:flex; align-items:center; gap:7px; }
   .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
   .kpi-value { font-family:'Bebas Neue',sans-serif; font-size:42px; line-height:1; }
   .kpi-sub { font-size:10px; color:var(--muted); margin-top:4px; font-family:'JetBrains Mono',monospace; }
-
   .toolbar { display:flex; align-items:center; gap:8px; padding:18px 24px 0; flex-wrap:wrap; position:relative; z-index:1; }
   .search-wrap { position:relative; flex:1; min-width:180px; max-width:280px; }
   .search-wrap input { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:9px 12px 9px 36px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border .2s; }
@@ -58,7 +62,6 @@
   .pill.active { background:var(--orange); color:#fff; }
   .fsel { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:9px 10px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:12px; outline:none; cursor:pointer; }
   .fsel option { background:var(--surface2); }
-
   .board { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding:16px 24px 40px; position:relative; z-index:1; }
   .col { background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
   .col-head { padding:14px 14px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
@@ -67,10 +70,8 @@
   .cards { padding:10px; display:flex; flex-direction:column; gap:8px; max-height:58vh; overflow-y:auto; }
   .cards::-webkit-scrollbar { width:3px; }
   .cards::-webkit-scrollbar-thumb { background:rgba(255,90,0,0.3); border-radius:3px; }
-
-  .card { background:var(--bg); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:12px 12px 10px; cursor:pointer; position:relative; overflow:hidden; transition:all .2s; animation:fadein .3s ease both; }
+  .card { background:var(--bg); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:12px 12px 10px; position:relative; overflow:hidden; transition:all .2s; animation:fadein .3s ease both; }
   @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
   .card:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.4); }
   .card-name { font-size:13px; font-weight:600; line-height:1.35; margin-bottom:8px; }
   .card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; }
@@ -82,24 +83,44 @@
   .avatar { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; color:#fff; }
   .card-date { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted); }
   .empty { display:flex; flex-direction:column; align-items:center; padding:32px 12px; color:#444; font-size:12px; gap:6px; text-align:center; }
-
+  .eventos-wrap { padding:20px 24px 40px; position:relative; z-index:1; }
+  .ev-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-bottom:20px; background:var(--border); border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+  .mes-grupo { margin-bottom:28px; }
+  .mes-label { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:3px; color:var(--muted); margin-bottom:12px; border-left:3px solid var(--orange); padding-left:10px; }
+  .eventos-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+  .evento-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; transition:all .2s; animation:fadein .3s ease both; position:relative; }
+  .evento-card:hover { border-color:rgba(255,255,255,0.12); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.5); }
+  .evento-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+  .evento-nome { font-size:13px; font-weight:600; line-height:1.4; flex:1; margin-right:8px; }
+  .evento-data-box { background:var(--surface2); border-radius:8px; padding:6px 10px; text-align:center; min-width:48px; flex-shrink:0; }
+  .evento-dia { font-family:'Bebas Neue',sans-serif; font-size:22px; line-height:1; color:var(--orange); }
+  .evento-mes { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; }
+  .evento-tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px; }
+  .tag-cat { font-size:10px; padding:2px 8px; border-radius:4px; font-weight:600; background:rgba(179,136,255,0.12); color:var(--purple); }
+  .tag-emp { font-size:10px; padding:2px 8px; border-radius:4px; font-weight:500; background:rgba(255,90,0,0.1); color:#FF7A30; }
+  .tag-loc { font-size:10px; padding:2px 8px; border-radius:4px; background:rgba(255,255,255,0.04); color:#777; }
+  .progresso-wrap { margin-top:10px; }
+  .progresso-header { display:flex; justify-content:space-between; margin-bottom:5px; }
+  .progresso-label { font-size:10px; color:var(--muted); }
+  .progresso-pct { font-family:'JetBrains Mono',monospace; font-size:10px; }
+  .progresso-bar { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .progresso-fill { height:100%; border-radius:2px; }
+  .hoje-badge { font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,214,0,0.2); color:var(--yellow); letter-spacing:1px; margin-bottom:4px; display:inline-block; }
+  .amanha-badge { font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,90,0,0.2); color:var(--orange); letter-spacing:1px; margin-bottom:4px; display:inline-block; }
   .error-banner { display:none; margin:12px 24px 0; background:rgba(255,61,87,0.1); border:1px solid rgba(255,61,87,0.3); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--red); position:relative; z-index:1; }
   .loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:999; transition:opacity .4s; }
   .loading-screen.hidden { opacity:0; pointer-events:none; }
   .loader { width:42px; height:42px; border:3px solid var(--border); border-top-color:var(--orange); border-radius:50%; animation:spin .7s linear infinite; }
   .loading-text { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:3px; color:var(--muted); }
-
-  @media(max-width:960px){ .board{grid-template-columns:repeat(2,1fr)} .kpis{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:960px){ .board{grid-template-columns:repeat(2,1fr)} .kpis{grid-template-columns:repeat(3,1fr)} .ev-kpis{grid-template-columns:repeat(2,1fr)} }
   @media(max-width:600px){ .board{grid-template-columns:1fr} .kpis{grid-template-columns:repeat(2,1fr)} }
 </style>
 </head>
 <body>
-
 <div class="loading-screen" id="loading">
   <div class="loader"></div>
-  <div class="loading-text">Carregando do Notion...</div>
+  <div class="loading-text">Carregando War Room...</div>
 </div>
-
 <header>
   <div class="logo">
     <div class="logo-mark">🎓</div>
@@ -107,173 +128,215 @@
   </div>
   <div class="header-right">
     <div class="sync-info" id="sync-info"></div>
-    <button class="btn-sync" id="btn-sync" onclick="loadData()">
-      <span id="sync-icon">↻</span> Atualizar
-    </button>
+    <button class="btn-sync" onclick="loadAll()"><span id="sync-icon">↻</span> Atualizar</button>
   </div>
 </header>
-
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('comercial',this)">📋 Comercial</div>
+  <div class="tab" onclick="switchTab('eventos',this)">📅 Eventos</div>
+</div>
 <div class="error-banner" id="error-banner"></div>
 
-<div class="kpis">
-  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF5A00"></span>Total</div><div class="kpi-value" id="k-total" style="color:#FF5A00">—</div><div class="kpi-sub">turmas</div></div>
-  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00B0FF"></span>Não Iniciada</div><div class="kpi-value" id="k-pending" style="color:#00B0FF">—</div><div class="kpi-sub">aguardando</div></div>
-  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FFD600"></span>Em Aberto</div><div class="kpi-value" id="k-open" style="color:#FFD600">—</div><div class="kpi-sub">em negociação</div></div>
-  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00E676"></span>Fechadas</div><div class="kpi-value" id="k-closed" style="color:#00E676">—</div><div class="kpi-sub">confirmadas</div></div>
-  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF3D57"></span>Perdidas</div><div class="kpi-value" id="k-lost" style="color:#FF3D57">—</div><div class="kpi-sub">não fecharam</div></div>
+<!-- COMERCIAL -->
+<div class="panel active" id="panel-comercial">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF5A00"></span>Total</div><div class="kpi-value" id="k-total" style="color:#FF5A00">—</div><div class="kpi-sub">turmas</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00B0FF"></span>Não Iniciada</div><div class="kpi-value" id="k-pending" style="color:#00B0FF">—</div><div class="kpi-sub">aguardando</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FFD600"></span>Em Aberto</div><div class="kpi-value" id="k-open" style="color:#FFD600">—</div><div class="kpi-sub">em negociação</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00E676"></span>Fechadas</div><div class="kpi-value" id="k-closed" style="color:#00E676">—</div><div class="kpi-sub">confirmadas</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF3D57"></span>Perdidas</div><div class="kpi-value" id="k-lost" style="color:#FF3D57">—</div><div class="kpi-sub">não fecharam</div></div>
+  </div>
+  <div class="toolbar">
+    <div class="search-wrap"><span class="si">🔍</span><input type="text" id="search" placeholder="Buscar turma, consultor..." oninput="renderComercial()"></div>
+    <div class="pills">
+      <button class="pill active" onclick="setFilter('all',this)">Todas</button>
+      <button class="pill" onclick="setFilter('Não iniciada',this)">Não iniciada</button>
+      <button class="pill" onclick="setFilter('Em Aberto',this)">Em Aberto</button>
+      <button class="pill" onclick="setFilter('Fechada',this)">Fechada</button>
+      <button class="pill" onclick="setFilter('Perdida',this)">Perdida</button>
+    </div>
+    <select class="fsel" id="f-empresa" onchange="renderComercial()"><option value="">Todas empresas</option><option>VIVA</option><option>Luminous</option><option>Triunfo</option></select>
+    <select class="fsel" id="f-consultor" onchange="renderComercial()"><option value="">Todos consultores</option><option>Vinícius</option><option>Igor</option></select>
+    <select class="fsel" id="f-cidade" onchange="renderComercial()"><option value="">Todas cidades</option><option>Teófilo Otoni - MG</option><option>Governador Valadares - MG</option><option>Teixeira de Freitas - BA</option><option>Eunápolis - BA</option><option>Porto Seguro - BA</option></select>
+  </div>
+  <div class="board">
+    <div class="col" style="border-top:3px solid #00B0FF"><div class="col-head"><div class="col-title" style="color:#00B0FF">🔵 Não Iniciada <span class="col-badge" id="ct-pending" style="background:rgba(0,176,255,0.12);color:#00B0FF">0</span></div></div><div class="cards" id="col-pending"></div></div>
+    <div class="col" style="border-top:3px solid #FFD600"><div class="col-head"><div class="col-title" style="color:#FFD600">⚡ Em Aberto <span class="col-badge" id="ct-open" style="background:rgba(255,214,0,0.12);color:#FFD600">0</span></div></div><div class="cards" id="col-open"></div></div>
+    <div class="col" style="border-top:3px solid #00E676"><div class="col-head"><div class="col-title" style="color:#00E676">✅ Fechadas <span class="col-badge" id="ct-closed" style="background:rgba(0,230,118,0.12);color:#00E676">0</span></div></div><div class="cards" id="col-closed"></div></div>
+    <div class="col" style="border-top:3px solid #FF3D57"><div class="col-head"><div class="col-title" style="color:#FF3D57">❌ Perdidas <span class="col-badge" id="ct-lost" style="background:rgba(255,61,87,0.12);color:#FF3D57">0</span></div></div><div class="cards" id="col-lost"></div></div>
+  </div>
 </div>
 
-<div class="toolbar">
-  <div class="search-wrap">
-    <span class="si">🔍</span>
-    <input type="text" id="search" placeholder="Buscar turma, consultor..." oninput="render()">
-  </div>
-  <div class="pills">
-    <button class="pill active" onclick="setFilter('all',this)">Todas</button>
-    <button class="pill" onclick="setFilter('Não iniciada',this)">Não iniciada</button>
-    <button class="pill" onclick="setFilter('Em Aberto',this)">Em Aberto</button>
-    <button class="pill" onclick="setFilter('Fechada',this)">Fechada</button>
-    <button class="pill" onclick="setFilter('Perdida',this)">Perdida</button>
-  </div>
-  <select class="fsel" id="f-empresa" onchange="render()">
-    <option value="">Todas empresas</option>
-    <option>VIVA</option><option>Luminous</option><option>Triunfo</option>
-  </select>
-  <select class="fsel" id="f-consultor" onchange="render()">
-    <option value="">Todos consultores</option>
-    <option>Vinícius</option><option>Igor</option>
-  </select>
-  <select class="fsel" id="f-cidade" onchange="render()">
-    <option value="">Todas cidades</option>
-    <option>Teófilo Otoni - MG</option>
-    <option>Governador Valadares - MG</option>
-    <option>Teixeira de Freitas - BA</option>
-    <option>Eunápolis - BA</option>
-    <option>Porto Seguro - BA</option>
-  </select>
-</div>
-
-<div class="board">
-  <div class="col" style="border-top:3px solid #00B0FF">
-    <div class="col-head">
-      <div class="col-title" style="color:#00B0FF">🔵 Não Iniciada <span class="col-badge" id="ct-pending" style="background:rgba(0,176,255,0.12);color:#00B0FF">0</span></div>
+<!-- EVENTOS -->
+<div class="panel" id="panel-eventos">
+  <div class="eventos-wrap">
+    <div class="ev-kpis">
+      <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#B388FF"></span>Total</div><div class="kpi-value" id="ek-total" style="color:#B388FF">—</div><div class="kpi-sub">eventos</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FFD600"></span>Hoje / Amanhã</div><div class="kpi-value" id="ek-urgente" style="color:#FFD600">—</div><div class="kpi-sub">próximos</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00E676"></span>Este Mês</div><div class="kpi-value" id="ek-mes" style="color:#00E676">—</div><div class="kpi-sub">eventos</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF5A00"></span>100% Tarefas</div><div class="kpi-value" id="ek-done" style="color:#FF5A00">—</div><div class="kpi-sub">concluídos</div></div>
     </div>
-    <div class="cards" id="col-pending"></div>
-  </div>
-  <div class="col" style="border-top:3px solid #FFD600">
-    <div class="col-head">
-      <div class="col-title" style="color:#FFD600">⚡ Em Aberto <span class="col-badge" id="ct-open" style="background:rgba(255,214,0,0.12);color:#FFD600">0</span></div>
+    <div class="toolbar" style="padding:0 0 16px;">
+      <div class="search-wrap"><span class="si">🔍</span><input type="text" id="ev-search" placeholder="Buscar evento, local..." oninput="renderEventos()"></div>
+      <select class="fsel" id="ev-empresa" onchange="renderEventos()"><option value="">Todas empresas</option><option>VIVA</option><option>Luminous</option><option>Triunfo</option></select>
+      <select class="fsel" id="ev-cat" onchange="renderEventos()"><option value="">Todas categorias</option><option>Baile</option><option>Colação de Grau</option><option>Cerimônia do Jaleco</option><option>Cer. Religiosa</option><option>Jantar</option><option>Pré-Evento</option><option>Sessão de Fotos</option><option>ANIVERSÁRIO</option><option>CASAMENTO</option><option>CORPORATIVO</option></select>
     </div>
-    <div class="cards" id="col-open"></div>
-  </div>
-  <div class="col" style="border-top:3px solid #00E676">
-    <div class="col-head">
-      <div class="col-title" style="color:#00E676">✅ Fechadas <span class="col-badge" id="ct-closed" style="background:rgba(0,230,118,0.12);color:#00E676">0</span></div>
-    </div>
-    <div class="cards" id="col-closed"></div>
-  </div>
-  <div class="col" style="border-top:3px solid #FF3D57">
-    <div class="col-head">
-      <div class="col-title" style="color:#FF3D57">❌ Perdidas <span class="col-badge" id="ct-lost" style="background:rgba(255,61,87,0.12);color:#FF3D57">0</span></div>
-    </div>
-    <div class="cards" id="col-lost"></div>
+    <div id="eventos-lista"></div>
   </div>
 </div>
 
 <script>
-  let allCards = [];
-  let currentFilter = 'all';
-  const COLORS = ['#FF5A00','#FF3D57','#00B0FF','#7C4DFF','#00BFA5'];
+  let turmas=[], eventos=[], currentFilter='all';
+  const COLORS=['#FF5A00','#FF3D57','#00B0FF','#7C4DFF','#00BFA5'];
+  const barColor={'Não iniciada':'#00B0FF','Em Aberto':'#FFD600','Fechada':'#00E676','Perdida':'#FF3D57'};
+  const catColor={'Baile':'#B388FF','Colação de Grau':'#00E676','Cerimônia do Jaleco':'#FFD600','CASAMENTO':'#FF7A30','ANIVERSÁRIO':'#FF3D57','CORPORATIVO':'#00B0FF'};
   function avatarColor(n=''){let h=0;for(let c of n)h+=c.charCodeAt(0);return COLORS[h%COLORS.length];}
   function initials(n=''){return n.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?';}
-  const barColor = { 'Não iniciada':'#00B0FF','Em Aberto':'#FFD600','Fechada':'#00E676','Perdida':'#FF3D57' };
 
-  async function loadData() {
-    const icon = document.getElementById('sync-icon');
+  function switchTab(tab,el){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-'+tab).classList.add('active');
+  }
+
+  async function loadAll(){
+    const icon=document.getElementById('sync-icon');
     icon.classList.add('spinning');
-    document.getElementById('error-banner').style.display = 'none';
-    try {
-      // ⚠️ Troque pela URL da sua API no Vercel após o deploy
-      const resp = await fetch('/api/turmas');
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      allCards = await resp.json();
-      render();
-      const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('sync-info').textContent = `Sync ${now} · ${allCards.length} registros`;
-    } catch(e) {
-      const err = document.getElementById('error-banner');
-      err.style.display = 'block';
-      err.textContent = '⚠️ Erro ao carregar dados: ' + e.message;
-    } finally {
+    document.getElementById('error-banner').style.display='none';
+    try{
+      const [r1,r2]=await Promise.all([fetch('/api/turmas'),fetch('/api/eventos')]);
+      if(r1.ok) turmas=await r1.json();
+      if(r2.ok) eventos=await r2.json();
+      renderComercial(); renderEventos();
+      const now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('sync-info').textContent=`Sync ${now} · ${turmas.length} turmas · ${eventos.length} eventos`;
+    }catch(e){
+      const err=document.getElementById('error-banner');
+      err.style.display='block';
+      err.textContent='⚠️ Erro: '+e.message;
+    }finally{
       icon.classList.remove('spinning');
       document.getElementById('loading').classList.add('hidden');
     }
   }
 
-  function render() {
-    const q = document.getElementById('search').value.toLowerCase();
-    const fE = document.getElementById('f-empresa').value;
-    const fC = document.getElementById('f-consultor').value;
-    const fCi = document.getElementById('f-cidade').value;
-
-    const filtered = allCards.filter(c => {
-      const mF = currentFilter==='all' || c.status===currentFilter;
-      const mQ = !q||(c.name||'').toLowerCase().includes(q)||(c.consultor||'').toLowerCase().includes(q)||(c.cidade||'').toLowerCase().includes(q);
-      const mE = !fE||(Array.isArray(c.empresa)?c.empresa.includes(fE):c.empresa===fE);
-      const mC = !fC||c.consultor===fC;
-      const mCi = !fCi||c.cidade===fCi;
-      return mF&&mQ&&mE&&mC&&mCi;
+  function renderComercial(){
+    const q=document.getElementById('search').value.toLowerCase();
+    const fE=document.getElementById('f-empresa').value;
+    const fC=document.getElementById('f-consultor').value;
+    const fCi=document.getElementById('f-cidade').value;
+    const filtered=turmas.filter(c=>{
+      const mF=currentFilter==='all'||c.status===currentFilter;
+      const mQ=!q||(c.name||'').toLowerCase().includes(q)||(c.consultor||'').toLowerCase().includes(q);
+      const mE=!fE||(Array.isArray(c.empresa)?c.empresa.includes(fE):c.empresa===fE);
+      return mF&&mQ&&mE&&(!fC||c.consultor===fC)&&(!fCi||c.cidade===fCi);
     });
-
-    const groups = {'Não iniciada':[],'Em Aberto':[],'Fechada':[],'Perdida':[]};
-    filtered.forEach(c=>{ if(groups[c.status]) groups[c.status].push(c); });
-
+    const groups={'Não iniciada':[],'Em Aberto':[],'Fechada':[],'Perdida':[]};
+    filtered.forEach(c=>{if(groups[c.status])groups[c.status].push(c);});
     renderCol('col-pending','ct-pending',groups['Não iniciada']);
-    renderCol('col-open',   'ct-open',   groups['Em Aberto']);
-    renderCol('col-closed', 'ct-closed', groups['Fechada']);
-    renderCol('col-lost',   'ct-lost',   groups['Perdida']);
-
-    document.getElementById('k-total').textContent   = allCards.length;
-    document.getElementById('k-pending').textContent = allCards.filter(c=>c.status==='Não iniciada').length;
-    document.getElementById('k-open').textContent    = allCards.filter(c=>c.status==='Em Aberto').length;
-    document.getElementById('k-closed').textContent  = allCards.filter(c=>c.status==='Fechada').length;
-    document.getElementById('k-lost').textContent    = allCards.filter(c=>c.status==='Perdida').length;
+    renderCol('col-open','ct-open',groups['Em Aberto']);
+    renderCol('col-closed','ct-closed',groups['Fechada']);
+    renderCol('col-lost','ct-lost',groups['Perdida']);
+    document.getElementById('k-total').textContent=turmas.length;
+    document.getElementById('k-pending').textContent=turmas.filter(c=>c.status==='Não iniciada').length;
+    document.getElementById('k-open').textContent=turmas.filter(c=>c.status==='Em Aberto').length;
+    document.getElementById('k-closed').textContent=turmas.filter(c=>c.status==='Fechada').length;
+    document.getElementById('k-lost').textContent=turmas.filter(c=>c.status==='Perdida').length;
   }
 
-  function renderCol(colId, ctId, items) {
-    document.getElementById(ctId).textContent = items.length;
-    const col = document.getElementById(colId);
-    if (!items.length) { col.innerHTML=`<div class="empty"><div style="font-size:24px;opacity:.3">📭</div>Nenhuma turma</div>`; return; }
-    col.innerHTML = items.map(c => {
-      const empresas = Array.isArray(c.empresa)?c.empresa:(c.empresa?[c.empresa]:[]);
-      const date = c.created ? new Date(c.created).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) : '';
-      return `<div class="card" style="--bar:${barColor[c.status]||'#555'}">
+  function renderCol(colId,ctId,items){
+    document.getElementById(ctId).textContent=items.length;
+    const col=document.getElementById(colId);
+    if(!items.length){col.innerHTML=`<div class="empty"><div style="font-size:24px;opacity:.3">📭</div>Nenhuma turma</div>`;return;}
+    col.innerHTML=items.map(c=>{
+      const empresas=Array.isArray(c.empresa)?c.empresa:(c.empresa?[c.empresa]:[]);
+      const date=c.created?new Date(c.created).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'';
+      return `<div class="card">
         <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${barColor[c.status]||'#555'};border-radius:3px 0 0 3px"></div>
         <div class="card-name">${c.name||'(sem nome)'}</div>
-        <div class="card-tags">
-          ${empresas.map(e=>`<span class="tag tag-empresa">${e}</span>`).join('')}
-          ${c.cidade?`<span class="tag tag-cidade">${c.cidade.split(' - ')[0]}</span>`:''}
-        </div>
+        <div class="card-tags">${empresas.map(e=>`<span class="tag tag-empresa">${e}</span>`).join('')}${c.cidade?`<span class="tag tag-cidade">${c.cidade.split(' - ')[0]}</span>`:''}</div>
         <div class="card-foot">
-          <div class="card-consultant">
-            ${c.consultor
-              ?`<div class="avatar" style="background:${avatarColor(c.consultor)}">${initials(c.consultor)}</div>${c.consultor}`
-              :`<span style="color:#444">Sem consultor</span>`}
-          </div>
+          <div class="card-consultant">${c.consultor?`<div class="avatar" style="background:${avatarColor(c.consultor)}">${initials(c.consultor)}</div>${c.consultor}`:`<span style="color:#444">Sem consultor</span>`}</div>
           <div class="card-date">${date}</div>
         </div>
       </div>`;
     }).join('');
   }
 
-  function setFilter(f, el) {
-    currentFilter = f;
+  function setFilter(f,el){
+    currentFilter=f;
     document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
     el.classList.add('active');
-    render();
+    renderComercial();
   }
 
-  loadData();
+  function renderEventos(){
+    const q=document.getElementById('ev-search').value.toLowerCase();
+    const fE=document.getElementById('ev-empresa').value;
+    const fC=document.getElementById('ev-cat').value;
+    const hoje=new Date();hoje.setHours(0,0,0,0);
+    const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
+    const filtered=eventos.filter(e=>{
+      const mQ=!q||(e.nome||'').toLowerCase().includes(q)||(e.local||'').toLowerCase().includes(q);
+      return mQ&&(!fE||e.empresa===fE)&&(!fC||e.categoria===fC);
+    });
+    const urgente=filtered.filter(e=>{
+      if(!e.data)return false;
+      const d=new Date(e.data);d.setHours(0,0,0,0);
+      return d.getTime()===hoje.getTime()||d.getTime()===amanha.getTime();
+    }).length;
+    const mesMes=filtered.filter(e=>{
+      if(!e.data)return false;
+      const d=new Date(e.data);
+      return d.getMonth()===hoje.getMonth()&&d.getFullYear()===hoje.getFullYear();
+    }).length;
+    document.getElementById('ek-total').textContent=filtered.length;
+    document.getElementById('ek-urgente').textContent=urgente;
+    document.getElementById('ek-mes').textContent=mesMes;
+    document.getElementById('ek-done').textContent=filtered.filter(e=>e.progresso===100&&e.tarefasTotal>0).length;
+    const grupos={};
+    filtered.forEach(e=>{
+      const key=e.data?new Date(e.data).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).toUpperCase():'SEM DATA';
+      (grupos[key]||(grupos[key]=[])).push(e);
+    });
+    const lista=document.getElementById('eventos-lista');
+    if(!filtered.length){lista.innerHTML=`<div class="empty" style="padding:60px"><div style="font-size:32px;opacity:.3">📭</div>Nenhum evento encontrado</div>`;return;}
+    lista.innerHTML=Object.entries(grupos).map(([mes,evs])=>`
+      <div class="mes-grupo">
+        <div class="mes-label">${mes}</div>
+        <div class="eventos-grid">${evs.map(e=>renderEventoCard(e,hoje,amanha)).join('')}</div>
+      </div>`).join('');
+  }
+
+  function renderEventoCard(e,hoje,amanha){
+    const d=e.data?new Date(e.data):null;
+    const dia=d?d.getDate():'—';
+    const mes=d?d.toLocaleDateString('pt-BR',{month:'short'}).toUpperCase().replace('.',''):'';
+    const hora=d&&e.data.includes('T')?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+    const cor=catColor[e.categoria]||'#888';
+    const pctCor=e.progresso===100?'#00E676':e.progresso>50?'#FFD600':'#FF5A00';
+    let badge='';
+    if(d){const dd=new Date(d);dd.setHours(0,0,0,0);if(dd.getTime()===hoje.getTime())badge=`<span class="hoje-badge">HOJE</span>`;else if(dd.getTime()===amanha.getTime())badge=`<span class="amanha-badge">AMANHÃ</span>`;}
+    return `<div class="evento-card" style="border-left:3px solid ${cor}">
+      <div class="evento-top">
+        <div style="flex:1;margin-right:8px">
+          ${badge}
+          <div class="evento-nome">${e.nome}</div>
+          ${hora?`<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px">⏰ ${hora}</div>`:''}
+        </div>
+        <div class="evento-data-box"><div class="evento-dia">${dia}</div><div class="evento-mes">${mes}</div></div>
+      </div>
+      <div class="evento-tags">
+        ${e.categoria?`<span class="tag tag-cat">${e.categoria}</span>`:''}
+        ${e.empresa?`<span class="tag tag-emp">${e.empresa}</span>`:''}
+        ${e.local?`<span class="tag tag-loc">📍 ${e.local}</span>`:''}
+      </div>
+      ${e.tarefasTotal>0?`<div class="progresso-wrap"><div class="progresso-header"><span class="progresso-label">Tarefas: ${e.tarefasFeitas}/${e.tarefasTotal}</span><span class="progresso-pct" style="color:${pctCor}">${e.progresso}%</span></div><div class="progresso-bar"><div class="progresso-fill" style="width:${e.progresso}%;background:${pctCor}"></div></div></div>`:''}
+    </div>`;
+  }
+
+  loadAll();
 </script>
 </body>
 </html>
