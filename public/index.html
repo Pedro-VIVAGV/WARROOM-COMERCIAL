@@ -31,7 +31,6 @@
   .logo { display:flex; align-items:center; gap:10px; }
   .logo-mark { width:34px; height:34px; background:var(--orange); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
   .logo-text { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; }
-  .logo-text span { color:var(--orange); }
   .header-right { display:flex; align-items:center; gap:12px; }
   .sync-info { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
   .btn-sync { background:var(--surface2); border:1px solid rgba(255,90,0,0.25); color:var(--orange); padding:7px 16px; border-radius:7px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px; transition:all .2s; }
@@ -128,7 +127,7 @@
   </div>
   <div class="header-right">
     <div class="sync-info" id="sync-info"></div>
-   <button class="btn-sync" onclick="loadAll()"><span id="sync-icon">↻</span> Atualizar</button>
+    <button class="btn-sync" onclick="loadAll()"><span id="sync-icon">↻</span> Atualizar</button>
   </div>
 </header>
 <div class="tabs">
@@ -283,13 +282,13 @@
     });
     const urgente=filtered.filter(e=>{
       if(!e.data)return false;
-      const d=new Date(e.data);d.setHours(0,0,0,0);
+      const d=new Date(e.data);d.setUTCHours(0,0,0,0);
       return d.getTime()===hoje.getTime()||d.getTime()===amanha.getTime();
     }).length;
     const mesMes=filtered.filter(e=>{
       if(!e.data)return false;
       const d=new Date(e.data);
-      return d.getMonth()===hoje.getMonth()&&d.getFullYear()===hoje.getFullYear();
+      return d.getUTCMonth()===hoje.getMonth()&&d.getUTCFullYear()===hoje.getFullYear();
     }).length;
     document.getElementById('ek-total').textContent=filtered.length;
     document.getElementById('ek-urgente').textContent=urgente;
@@ -297,7 +296,7 @@
     document.getElementById('ek-done').textContent=filtered.filter(e=>e.progresso===100&&e.tarefasTotal>0).length;
     const grupos={};
     filtered.forEach(e=>{
-      const key=e.data?new Date(e.data).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).toUpperCase():'SEM DATA';
+      const key=e.data?new Date(e.data).toLocaleDateString('pt-BR',{month:'long',year:'numeric',timeZone:'UTC'}).toUpperCase():'SEM DATA';
       (grupos[key]||(grupos[key]=[])).push(e);
     });
     const lista=document.getElementById('eventos-lista');
@@ -334,22 +333,23 @@
       </div>
       ${e.tarefasTotal>0?`<div class="progresso-wrap"><div class="progresso-header"><span class="progresso-label">Tarefas: ${e.tarefasFeitas}/${e.tarefasTotal}</span><span class="progresso-pct" style="color:${pctCor}">${e.progresso}%</span></div><div class="progresso-bar"><div class="progresso-fill" style="width:${e.progresso}%;background:${pctCor}"></div></div></div>`:''}
     </div>`;
-    const SENHA = "viva2026";
-
-function pedirSenha() {
-  const input = prompt("🔐 Digite a senha para acessar o dashboard:");
-  if (input === SENHA) {
-    loadAll();
-  } else if (input === null) {
-    document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'DM Sans',sans-serif;color:#555;font-size:14px;">Acesso negado.</div>`;
-  } else {
-    alert("Senha incorreta. Tente novamente.");
-    pedirSenha();
   }
-}
 
-pedirSenha();
+  const SENHA = "viva2026";
+
+  function pedirSenha() {
+    const input = prompt("🔐 Digite a senha para acessar o dashboard:");
+    if (input === SENHA) {
+      loadAll();
+    } else if (input === null) {
+      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'DM Sans',sans-serif;color:#555;font-size:14px;">Acesso negado.</div>`;
+    } else {
+      alert("Senha incorreta. Tente novamente.");
+      pedirSenha();
+    }
   }
+
+  pedirSenha();
 </script>
 </body>
 </html>
