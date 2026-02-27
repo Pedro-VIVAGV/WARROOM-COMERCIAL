@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>War Room Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:#FF5A00; --bg:#0B0B0B; --surface:#141414; --surface2:#1C1C1C;
+    --border:rgba(255,255,255,0.07); --text:#EFEFEF; --muted:#555;
+    --green:#00E676; --red:#FF3D57; --yellow:#FFD600; --blue:#00B0FF;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(255,90,0,0.05) 0%, transparent 60%),
+      linear-gradient(rgba(255,90,0,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,90,0,0.02) 1px, transparent 1px);
+    background-size:auto,48px 48px,48px 48px;
+  }
+
+  header {
+    position:sticky; top:0; z-index:100;
+    background:rgba(11,11,11,0.95); backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    padding:0 28px; display:flex; align-items:center; justify-content:space-between; height:60px;
+  }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-mark { width:34px; height:34px; background:var(--orange); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .logo-text { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; }
+  .logo-text span { color:var(--orange); }
+  .header-right { display:flex; align-items:center; gap:12px; }
+  .sync-info { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+  .btn-sync { background:var(--surface2); border:1px solid rgba(255,90,0,0.25); color:var(--orange); padding:7px 16px; border-radius:7px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px; transition:all .2s; }
+  .btn-sync:hover { background:rgba(255,90,0,0.1); }
+  .spinning { animation:spin .7s linear infinite; display:inline-block; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; margin:24px 24px 0; background:var(--border); border-radius:14px; overflow:hidden; border:1px solid var(--border); position:relative; z-index:1; }
+  .kpi { background:var(--surface); padding:20px 18px; }
+  .kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+  .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .kpi-value { font-family:'Bebas Neue',sans-serif; font-size:42px; line-height:1; }
+  .kpi-sub { font-size:10px; color:var(--muted); margin-top:4px; font-family:'JetBrains Mono',monospace; }
+
+  .toolbar { display:flex; align-items:center; gap:8px; padding:18px 24px 0; flex-wrap:wrap; position:relative; z-index:1; }
+  .search-wrap { position:relative; flex:1; min-width:180px; max-width:280px; }
+  .search-wrap input { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:9px 12px 9px 36px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border .2s; }
+  .search-wrap input:focus { border-color:var(--orange); }
+  .search-wrap input::placeholder { color:var(--muted); }
+  .si { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); }
+  .pills { display:flex; background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  .pill { padding:9px 14px; font-size:12px; font-weight:500; cursor:pointer; color:var(--muted); border:none; background:transparent; font-family:'DM Sans',sans-serif; transition:all .2s; }
+  .pill:hover { color:var(--text); }
+  .pill.active { background:var(--orange); color:#fff; }
+  .fsel { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:9px 10px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:12px; outline:none; cursor:pointer; }
+  .fsel option { background:var(--surface2); }
+
+  .board { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding:16px 24px 40px; position:relative; z-index:1; }
+  .col { background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+  .col-head { padding:14px 14px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .col-title { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; display:flex; align-items:center; gap:7px; }
+  .col-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; }
+  .cards { padding:10px; display:flex; flex-direction:column; gap:8px; max-height:58vh; overflow-y:auto; }
+  .cards::-webkit-scrollbar { width:3px; }
+  .cards::-webkit-scrollbar-thumb { background:rgba(255,90,0,0.3); border-radius:3px; }
+
+  .card { background:var(--bg); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:12px 12px 10px; cursor:pointer; position:relative; overflow:hidden; transition:all .2s; animation:fadein .3s ease both; }
+  @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .card:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.4); }
+  .card-name { font-size:13px; font-weight:600; line-height:1.35; margin-bottom:8px; }
+  .card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; }
+  .tag { font-size:10px; padding:2px 7px; border-radius:4px; font-weight:500; }
+  .tag-empresa { background:rgba(255,90,0,0.12); color:#FF7A30; }
+  .tag-cidade { background:rgba(255,255,255,0.05); color:#888; }
+  .card-foot { display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid rgba(255,255,255,0.04); }
+  .card-consultant { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
+  .avatar { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; color:#fff; }
+  .card-date { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted); }
+  .empty { display:flex; flex-direction:column; align-items:center; padding:32px 12px; color:#444; font-size:12px; gap:6px; text-align:center; }
+
+  .error-banner { display:none; margin:12px 24px 0; background:rgba(255,61,87,0.1); border:1px solid rgba(255,61,87,0.3); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--red); position:relative; z-index:1; }
+  .loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:999; transition:opacity .4s; }
+  .loading-screen.hidden { opacity:0; pointer-events:none; }
+  .loader { width:42px; height:42px; border:3px solid var(--border); border-top-color:var(--orange); border-radius:50%; animation:spin .7s linear infinite; }
+  .loading-text { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:3px; color:var(--muted); }
+
+  @media(max-width:960px){ .board{grid-template-columns:repeat(2,1fr)} .kpis{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:600px){ .board{grid-template-columns:1fr} .kpis{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading">
+  <div class="loader"></div>
+  <div class="loading-text">Carregando do Notion...</div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">🎓</div>
+    <div class="logo-text">WAR<span>ROOM</span> COMERCIAL</div>
+  </div>
+  <div class="header-right">
+    <div class="sync-info" id="sync-info"></div>
+    <button class="btn-sync" id="btn-sync" onclick="loadData()">
+      <span id="sync-icon">↻</span> Atualizar
+    </button>
+  </div>
+</header>
+
+<div class="error-banner" id="error-banner"></div>
+
+<div class="kpis">
+  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF5A00"></span>Total</div><div class="kpi-value" id="k-total" style="color:#FF5A00">—</div><div class="kpi-sub">turmas</div></div>
+  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00B0FF"></span>Não Iniciada</div><div class="kpi-value" id="k-pending" style="color:#00B0FF">—</div><div class="kpi-sub">aguardando</div></div>
+  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FFD600"></span>Em Aberto</div><div class="kpi-value" id="k-open" style="color:#FFD600">—</div><div class="kpi-sub">em negociação</div></div>
+  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#00E676"></span>Fechadas</div><div class="kpi-value" id="k-closed" style="color:#00E676">—</div><div class="kpi-sub">confirmadas</div></div>
+  <div class="kpi"><div class="kpi-label"><span class="dot" style="background:#FF3D57"></span>Perdidas</div><div class="kpi-value" id="k-lost" style="color:#FF3D57">—</div><div class="kpi-sub">não fecharam</div></div>
+</div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="si">🔍</span>
+    <input type="text" id="search" placeholder="Buscar turma, consultor..." oninput="render()">
+  </div>
+  <div class="pills">
+    <button class="pill active" onclick="setFilter('all',this)">Todas</button>
+    <button class="pill" onclick="setFilter('Não iniciada',this)">Não iniciada</button>
+    <button class="pill" onclick="setFilter('Em Aberto',this)">Em Aberto</button>
+    <button class="pill" onclick="setFilter('Fechada',this)">Fechada</button>
+    <button class="pill" onclick="setFilter('Perdida',this)">Perdida</button>
+  </div>
+  <select class="fsel" id="f-empresa" onchange="render()">
+    <option value="">Todas empresas</option>
+    <option>VIVA</option><option>Luminous</option><option>Triunfo</option>
+  </select>
+  <select class="fsel" id="f-consultor" onchange="render()">
+    <option value="">Todos consultores</option>
+    <option>Vinícius</option><option>Igor</option>
+  </select>
+  <select class="fsel" id="f-cidade" onchange="render()">
+    <option value="">Todas cidades</option>
+    <option>Teófilo Otoni - MG</option>
+    <option>Governador Valadares - MG</option>
+    <option>Teixeira de Freitas - BA</option>
+    <option>Eunápolis - BA</option>
+    <option>Porto Seguro - BA</option>
+  </select>
+</div>
+
+<div class="board">
+  <div class="col" style="border-top:3px solid #00B0FF">
+    <div class="col-head">
+      <div class="col-title" style="color:#00B0FF">🔵 Não Iniciada <span class="col-badge" id="ct-pending" style="background:rgba(0,176,255,0.12);color:#00B0FF">0</span></div>
+    </div>
+    <div class="cards" id="col-pending"></div>
+  </div>
+  <div class="col" style="border-top:3px solid #FFD600">
+    <div class="col-head">
+      <div class="col-title" style="color:#FFD600">⚡ Em Aberto <span class="col-badge" id="ct-open" style="background:rgba(255,214,0,0.12);color:#FFD600">0</span></div>
+    </div>
+    <div class="cards" id="col-open"></div>
+  </div>
+  <div class="col" style="border-top:3px solid #00E676">
+    <div class="col-head">
+      <div class="col-title" style="color:#00E676">✅ Fechadas <span class="col-badge" id="ct-closed" style="background:rgba(0,230,118,0.12);color:#00E676">0</span></div>
+    </div>
+    <div class="cards" id="col-closed"></div>
+  </div>
+  <div class="col" style="border-top:3px solid #FF3D57">
+    <div class="col-head">
+      <div class="col-title" style="color:#FF3D57">❌ Perdidas <span class="col-badge" id="ct-lost" style="background:rgba(255,61,87,0.12);color:#FF3D57">0</span></div>
+    </div>
+    <div class="cards" id="col-lost"></div>
+  </div>
+</div>
+
+<script>
+  let allCards = [];
+  let currentFilter = 'all';
+  const COLORS = ['#FF5A00','#FF3D57','#00B0FF','#7C4DFF','#00BFA5'];
+  function avatarColor(n=''){let h=0;for(let c of n)h+=c.charCodeAt(0);return COLORS[h%COLORS.length];}
+  function initials(n=''){return n.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?';}
+  const barColor = { 'Não iniciada':'#00B0FF','Em Aberto':'#FFD600','Fechada':'#00E676','Perdida':'#FF3D57' };
+
+  async function loadData() {
+    const icon = document.getElementById('sync-icon');
+    icon.classList.add('spinning');
+    document.getElementById('error-banner').style.display = 'none';
+    try {
+      // ⚠️ Troque pela URL da sua API no Vercel após o deploy
+      const resp = await fetch('/api/turmas');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      allCards = await resp.json();
+      render();
+      const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('sync-info').textContent = `Sync ${now} · ${allCards.length} registros`;
+    } catch(e) {
+      const err = document.getElementById('error-banner');
+      err.style.display = 'block';
+      err.textContent = '⚠️ Erro ao carregar dados: ' + e.message;
+    } finally {
+      icon.classList.remove('spinning');
+      document.getElementById('loading').classList.add('hidden');
+    }
+  }
+
+  function render() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const fE = document.getElementById('f-empresa').value;
+    const fC = document.getElementById('f-consultor').value;
+    const fCi = document.getElementById('f-cidade').value;
+
+    const filtered = allCards.filter(c => {
+      const mF = currentFilter==='all' || c.status===currentFilter;
+      const mQ = !q||(c.name||'').toLowerCase().includes(q)||(c.consultor||'').toLowerCase().includes(q)||(c.cidade||'').toLowerCase().includes(q);
+      const mE = !fE||(Array.isArray(c.empresa)?c.empresa.includes(fE):c.empresa===fE);
+      const mC = !fC||c.consultor===fC;
+      const mCi = !fCi||c.cidade===fCi;
+      return mF&&mQ&&mE&&mC&&mCi;
+    });
+
+    const groups = {'Não iniciada':[],'Em Aberto':[],'Fechada':[],'Perdida':[]};
+    filtered.forEach(c=>{ if(groups[c.status]) groups[c.status].push(c); });
+
+    renderCol('col-pending','ct-pending',groups['Não iniciada']);
+    renderCol('col-open',   'ct-open',   groups['Em Aberto']);
+    renderCol('col-closed', 'ct-closed', groups['Fechada']);
+    renderCol('col-lost',   'ct-lost',   groups['Perdida']);
+
+    document.getElementById('k-total').textContent   = allCards.length;
+    document.getElementById('k-pending').textContent = allCards.filter(c=>c.status==='Não iniciada').length;
+    document.getElementById('k-open').textContent    = allCards.filter(c=>c.status==='Em Aberto').length;
+    document.getElementById('k-closed').textContent  = allCards.filter(c=>c.status==='Fechada').length;
+    document.getElementById('k-lost').textContent    = allCards.filter(c=>c.status==='Perdida').length;
+  }
+
+  function renderCol(colId, ctId, items) {
+    document.getElementById(ctId).textContent = items.length;
+    const col = document.getElementById(colId);
+    if (!items.length) { col.innerHTML=`<div class="empty"><div style="font-size:24px;opacity:.3">📭</div>Nenhuma turma</div>`; return; }
+    col.innerHTML = items.map(c => {
+      const empresas = Array.isArray(c.empresa)?c.empresa:(c.empresa?[c.empresa]:[]);
+      const date = c.created ? new Date(c.created).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) : '';
+      return `<div class="card" style="--bar:${barColor[c.status]||'#555'}">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${barColor[c.status]||'#555'};border-radius:3px 0 0 3px"></div>
+        <div class="card-name">${c.name||'(sem nome)'}</div>
+        <div class="card-tags">
+          ${empresas.map(e=>`<span class="tag tag-empresa">${e}</span>`).join('')}
+          ${c.cidade?`<span class="tag tag-cidade">${c.cidade.split(' - ')[0]}</span>`:''}
+        </div>
+        <div class="card-foot">
+          <div class="card-consultant">
+            ${c.consultor
+              ?`<div class="avatar" style="background:${avatarColor(c.consultor)}">${initials(c.consultor)}</div>${c.consultor}`
+              :`<span style="color:#444">Sem consultor</span>`}
+          </div>
+          <div class="card-date">${date}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function setFilter(f, el) {
+    currentFilter = f;
+    document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    render();
+  }
+
+  loadData();
+</script>
+</body>
+</html>
