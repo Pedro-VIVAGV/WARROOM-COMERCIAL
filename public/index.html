@@ -128,7 +128,21 @@
   </div>
   <div class="header-right">
     <div class="sync-info" id="sync-info"></div>
-    <button class="btn-sync" onclick="loadAll()"><span id="sync-icon">↻</span> Atualizar</button>
+    <button class="btn-sync" onclick="const SENHA = "viva2026";
+
+function pedirSenha() {
+  const input = prompt("🔐 Digite a senha para acessar o dashboard:");
+  if (input === SENHA) {
+    loadAll();
+  } else if (input === null) {
+    document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'DM Sans',sans-serif;color:#555;font-size:14px;">Acesso negado.</div>`;
+  } else {
+    alert("Senha incorreta. Tente novamente.");
+    pedirSenha();
+  }
+}
+
+pedirSenha();"><span id="sync-icon">↻</span> Atualizar</button>
   </div>
 </header>
 <div class="tabs">
